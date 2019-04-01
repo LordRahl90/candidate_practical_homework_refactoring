@@ -14,11 +14,12 @@ class LanguageBatchBo
 	 */
 	protected static $applications = array();
 
-	/**
-	 * Starts the language file generation.
-	 *
-	 * @return void
-	 */
+    /**
+     * Starts the language file generation.
+     *
+     * @return void
+     * @throws \Exception
+     */
 	public static function generateLanguageFiles()
 	{
 		// The applications where we need to translate.
@@ -39,16 +40,17 @@ class LanguageBatchBo
 		}
 	}
 
-	/**
-	 * Gets the language file for the given language and stores it.
-	 *
-	 * @param string $application   The name of the application.
-	 * @param string $language      The identifier of the language.
-	 *
-	 * @throws CurlException   If there was an error during the download of the language file.
-	 *
-	 * @return bool   The success of the operation.
-	 */
+    /**
+     * Gets the language file for the given language and stores it.
+     *
+     * @param string $application The name of the application.
+     * @param string $language The identifier of the language.
+     *
+     * @throws CurlException   If there was an error during the download of the language file.
+     * @throws \Exception
+     *
+     * @return bool   The success of the operation.
+     */
 	protected static function getLanguageFile($application, $language)
 	{
 		$result = false;
@@ -94,13 +96,14 @@ class LanguageBatchBo
 		return Config::get('system.paths.root') . '/cache/' . $application. '/';
 	}
 
-	/**
-	 * Gets the language files for the applet and puts them into the cache.
-	 *
-	 * @throws Exception   If there was an error.
-	 *
-	 * @return void
-	 */
+    /**
+     * Gets the language files for the applet and puts them into the cache.
+     *
+     * @throws Exception   If there was an error.
+     * @throws \Exception
+     *
+     * @return void
+     */
 	public static function generateAppletLanguageXmlFiles()
 	{
 		// List of the applets [directory => applet_id].
@@ -137,13 +140,14 @@ class LanguageBatchBo
 		echo "\nApplet language XMLs generated.\n";
 	}
 
-	/**
-	 * Gets the available languages for the given applet.
-	 *
-	 * @param string $applet   The applet identifier.
-	 *
-	 * @return array   The list of the available applet languages.
-	 */
+    /**
+     * Gets the available languages for the given applet.
+     *
+     * @param string $applet The applet identifier.
+     *
+     * @return array   The list of the available applet languages.
+     * @throws \Exception
+     */
 	protected static function getAppletLanguages($applet)
 	{
 		$result = ApiCall::call(
@@ -167,14 +171,15 @@ class LanguageBatchBo
 	}
 
 
-	/**
-	 * Gets a language xml for an applet.
-	 *
-	 * @param string $applet      The identifier of the applet.
-	 * @param string $language    The language identifier.
-	 *
-	 * @return string|false   The content of the language file or false if weren't able to get it.
-	 */
+    /**
+     * Gets a language xml for an applet.
+     *
+     * @param string $applet The identifier of the applet.
+     * @param string $language The language identifier.
+     *
+     * @return string|false   The content of the language file or false if weren't able to get it.
+     * @throws \Exception
+     */
 	protected static function getAppletLanguageFile($applet, $language)
 	{
 		$result = ApiCall::call(
@@ -201,15 +206,16 @@ class LanguageBatchBo
 		return $result['data'];
 	}
 
-	/**
-	 * Checks the api call result.
-	 *
-	 * @param mixed  $result   The api call result to check.
-	 *
-	 * @throws Exception   If the api call was not successful.
-	 *
-	 * @return void
-	 */
+    /**
+     * Checks the api call result.
+     *
+     * @param mixed $result The api call result to check.
+     *
+     * @throws Exception   If the api call was not successful.
+     * @throws \Exception
+     *
+     * @return void
+     */
 	protected static function checkForApiErrorResult($result)
 	{
 		// Error during the api call.
