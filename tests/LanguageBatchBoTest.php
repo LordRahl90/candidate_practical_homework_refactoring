@@ -35,11 +35,14 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
 
     public function testGetAppletLanguageFile(){
         $result=LanguageBatchBo::getAppletLanguageFile("portal","en");
-        var_dump($result);
+        $this->assertNotNull($result);
+        $this->assertStringStartsWith('<?xml version="1.0" encoding="UTF-8"?>',$result);
+        $this->assertStringEndsWith('</data>',$result);
     }
 
     public function testGetAppletLanguages(){
-        $data=LanguageBatchBo::getAppletLanguages("test");
-        var_dump($data);
+        $data=LanguageBatchBo::getAppletLanguages("portal");
+        $this->assertNotNull($data);
+        $this->assertEquals(1,count($data));
     }
 }

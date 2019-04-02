@@ -152,19 +152,16 @@ class LanguageBatchBo
      */
 	public static function getAppletLanguages($applet)
 	{
-		$result = ApiCall::call(
-			'system_api',
-			'language_api',
-			array(
-				'system' => 'LanguageFiles',
-				'action' => 'getAppletLanguages'
-			),
-			array('applet' => $applet)
-		);
-
+	    $getParamer=new GetParameter("LanguageFiles","getAppletLanguages");
+	    $postParam=array('applet' => $applet);
+	    $controller=new APICallController();
 		try {
-			self::checkForApiErrorResult($result);
+		    $result=$controller->makeAPICall($getParamer,$postParam);
+		    $controller->checkForApiErrorResult($result);
 		}
+		catch(ResponseException $re){
+		    throw new \Exception($re->getMessage());
+        }
 		catch (\Exception $e) {
 			throw new \Exception('Getting languages for applet (' . $applet . ') was unsuccessful ' . $e->getMessage());
 		}
