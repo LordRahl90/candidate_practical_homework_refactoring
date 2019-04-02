@@ -2,6 +2,8 @@
 
 namespace Language;
 
+use Language\Models\GetParameter;
+
 /**
  * Business logic related to generating language files.
  */
@@ -54,12 +56,14 @@ class LanguageBatchBo
 	protected static function getLanguageFile($application, $language)
 	{
 		$result = false;
+		$getParams=new GetParameter('LanguageFiles','getLanguageFile');
+
 		$languageResponse = ApiCall::call(
 			'system_api',
 			'language_api',
 			array(
-				'system' => 'LanguageFiles',
-				'action' => 'getLanguageFile'
+				'system' => $getParams->getSystem(),
+				'action' => $getParams->getAction()
 			),
 			array('language' => $language)
 		);
