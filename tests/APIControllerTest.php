@@ -14,6 +14,7 @@ use Language\Exceptions\ResponseException;
 
 class APIControllerTest extends PHPUnit_Framework_TestCase
 {
+
     public function testMakeAPICall(){
         $params=new GetParameter("LanguageFiles","getLanguageFile");
         $getParam=$params->buildPayload();
@@ -22,6 +23,9 @@ class APIControllerTest extends PHPUnit_Framework_TestCase
             'language'=>'en'
         ];
         $result=$apiController->makeAPICall($getParam,$payload);
+        $this->assertEquals("OK",$result['status']);
+        $this->assertNotNull($result['data']);
+        $this->assertEquals(977,strlen($result['data']));
     }
 
 

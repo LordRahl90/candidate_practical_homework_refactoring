@@ -2,6 +2,8 @@
 
 namespace Language;
 
+use Language\Controller\APICallController;
+use Language\Exceptions\ResponseException;
 use Language\Models\GetParameter;
 
 /**
@@ -53,24 +55,20 @@ class LanguageBatchBo
      *
      * @return bool   The success of the operation.
      */
-	protected static function getLanguageFile($application, $language)
+	public static function getLanguageFile($application, $language)
 	{
 		$result = false;
-		$getParams=new GetParameter('LanguageFiles','getLanguageFile');
-
-		$languageResponse = ApiCall::call(
-			'system_api',
-			'language_api',
-			array(
-				'system' => $getParams->getSystem(),
-				'action' => $getParams->getAction()
-			),
-			array('language' => $language)
-		);
+        $getParameter=new GetParameter('LanguageFiles','getLanguageFile');
+		$controller=new APICallController();
+		$postParam=['language' => $language];
 
 		try {
-			self::checkForApiErrorResult($languageResponse);
+            $languageResponse=$controller->makeAPICall($getParameter,$postParam);
+            $controller->checkForApiErrorResult($languageResponse);
 		}
+		catch(ResponseException $ex){
+		    throw new \Exception($ex->getMessage());
+        }
 		catch (\Exception $e) {
 			throw new \Exception('Error during getting language file: (' . $application . '/' . $language . ')');
 		}
@@ -95,7 +93,7 @@ class LanguageBatchBo
 	 *
 	 * @return string   The directory of the cached language files.
 	 */
-	protected static function getLanguageCachePath($application)
+	public static function getLanguageCachePath($application)
 	{
 		return Config::get('system.paths.root') . '/cache/' . $application. '/';
 	}
@@ -152,7 +150,7 @@ class LanguageBatchBo
      * @return array   The list of the available applet languages.
      * @throws \Exception
      */
-	protected static function getAppletLanguages($applet)
+	public static function getAppletLanguages($applet)
 	{
 		$result = ApiCall::call(
 			'system_api',
@@ -184,24 +182,22 @@ class LanguageBatchBo
      * @return string|false   The content of the language file or false if weren't able to get it.
      * @throws \Exception
      */
-	protected static function getAppletLanguageFile($applet, $language)
+	public static function getAppletLanguageFile($applet, $language)
 	{
-		$result = ApiCall::call(
-			'system_api',
-			'language_api',
-			array(
-				'system' => 'LanguageFiles',
-				'action' => 'getAppletLanguageFile'
-			),
-			array(
-				'applet' => $applet,
-				'language' => $language
-			)
-		);
+		$controller=new APICallController();
+		$getParameter=new GetParameter("LanguageFiles","getAppletLanguageFile");
+		$postParam=array(
+		    'applet' => $applet,
+            'language' => $language
+        );
+		$result=$controller->makeAPICall($getParameter,$postParam);
 
 		try {
-			self::checkForApiErrorResult($result);
+			$controller->checkForApiErrorResult($result);
 		}
+		catch(ResponseException $ex){
+		    throw new \Exception($ex->getMessage());
+        }
 		catch (\Exception $e) {
 			throw new \Exception('Getting language xml for applet: (' . $applet . ') on language: (' . $language . ') was unsuccessful: '
 				. $e->getMessage());
